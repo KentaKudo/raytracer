@@ -1,11 +1,11 @@
 #[derive(Copy, Clone)]
 pub struct Vec3(f64, f64, f64);
 
-type Point3 = Vec3;
+pub type Point3 = Vec3;
 pub type Color = Vec3;
 
 impl Vec3 {
-    fn default() -> Self {
+    pub fn default() -> Self {
         Self(0.0, 0.0, 0.0)
     }
 
@@ -13,15 +13,15 @@ impl Vec3 {
         Self(x, y, z)
     }
 
-    fn x(self) -> f64 {
+    pub fn x(self) -> f64 {
         self.0
     }
 
-    fn y(self) -> f64 {
+    pub fn y(self) -> f64 {
         self.1
     }
 
-    fn z(self) -> f64 {
+    pub fn z(self) -> f64 {
         self.2
     }
 
@@ -131,7 +131,7 @@ impl Vec3 {
         )
     }
 
-    fn unit_vector(self) -> Self {
+    pub fn unit_vector(self) -> Self {
         self / self.length()
     }
 }
