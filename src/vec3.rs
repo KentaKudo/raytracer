@@ -6,7 +6,7 @@ pub type Color = Vec3;
 
 impl Vec3 {
     pub fn default() -> Self {
-        Self(0.0, 0.0, 0.0)
+        Self(0., 0., 0.)
     }
 
     pub fn new(x: f64, y: f64, z: f64) -> Self {
@@ -40,7 +40,7 @@ impl ops::Neg for Vec3 {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
-        Self(-self.0, -self.1, -self.2)
+        Self(-self.x(), -self.y(), -self.z())
     }
 }
 
@@ -108,19 +108,19 @@ impl ops::AddAssign for Vec3 {
 
 impl ops::MulAssign<f64> for Vec3 {
     fn mul_assign(&mut self, other: f64) {
-        *self = Self(self.x() * other, self.y() * other, self.z() * other);
+        *self = Self(self.x() * other, self.y() * other, self.z() * other)
     }
 }
 
 impl ops::DivAssign<f64> for Vec3 {
     fn div_assign(&mut self, other: f64) {
-        *self *= 1.0 / other;
+        *self = Self(self.x() / other, self.y() / other, self.z() / other)
     }
 }
 
 impl Vec3 {
-    fn dot(self, other: Self) -> f64 {
-        self.x() * other.x() + self.y() + other.y() + self.z() + other.z()
+    pub fn dot(self, other: Self) -> f64 {
+        self.x() * other.x() + self.y() * other.y() + self.z() * other.z()
     }
 
     fn cross(self, other: Self) -> Self {
