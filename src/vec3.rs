@@ -144,11 +144,13 @@ impl fmt::Display for Vec3 {
     }
 }
 
-pub fn print_color(pixel_color: Color) {
+pub fn print_color(pixel_color: Color, samples_per_pixel: i64) {
+    let Vec3(r, g, b) = pixel_color / samples_per_pixel as f64;
+
     println!(
         "{} {} {}",
-        (255.999 * pixel_color.x()) as i32,
-        (255.999 * pixel_color.y()) as i32,
-        (255.999 * pixel_color.z()) as i32,
+        (256. * r.clamp(0., 0.999)) as i32,
+        (256. * g.clamp(0., 0.999)) as i32,
+        (256. * b.clamp(0., 0.999)) as i32,
     )
 }
