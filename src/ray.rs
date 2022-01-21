@@ -24,9 +24,24 @@ impl Ray {
         self.org + t * self.dir
     }
 
-    pub fn color(&self, world: &HittableList) -> Color {
-        if let Some(rec) = world.hit(self, 0., std::f64::INFINITY) {
-            return 0.5 * (rec.normal + Color::new(1., 1., 1.));
+    pub fn color(&self, world: &HittableList, depth: i64) -> Color {
+        if depth <= 0 {
+            return Color::default();
+        }
+
+        if let Some(rec) = world.hit(self, 0.001, std::f64::INFINITY) {
+            // Pick one from different diffuse approaches.
+
+            // 1. True Lambertian Reflection
+            let target = rec.p + rec.normal + Vec3::random_unit_vector();
+
+            // 2. Simple Diffuse
+            // let target = rec.p + rec.normal + Vec3::random_in_unit_sphere();
+
+            // 3. Uniform scatter for all angles away from hit point
+            // let target = rec.p + Vec3::random_in_hemisphere(rec.normal);
+
+            return 0.5 * Ray::new(rec.p, target - rec.p).color(world, depth - 1);
         }
 
         let unit_direction = self.direction().unit_vector();

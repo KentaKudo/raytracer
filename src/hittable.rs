@@ -2,7 +2,7 @@ use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
 
 pub struct HitRecord {
-    p: Point3,
+    pub p: Point3,
     pub normal: Vec3,
     pub t: f64,
     front_face: bool,

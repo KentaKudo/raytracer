@@ -1,3 +1,6 @@
+use rand::rngs::SmallRng;
+use rand::{Rng, SeedableRng};
+
 #[derive(Copy, Clone)]
 pub struct Vec3(f64, f64, f64);
 
@@ -11,6 +14,41 @@ impl Vec3 {
 
     pub fn new(x: f64, y: f64, z: f64) -> Self {
         Self(x, y, z)
+    }
+
+    pub fn random(min: f64, max: f64) -> Self {
+        let mut rng = match SmallRng::from_rng(rand::thread_rng()) {
+            Ok(rng) => rng,
+            _ => return Self::default(),
+        };
+
+        Self(
+            rng.gen_range(min..max),
+            rng.gen_range(min..max),
+            rng.gen_range(min..max),
+        )
+    }
+
+    pub fn random_in_unit_sphere() -> Self {
+        loop {
+            let p = Self::random(-1., 1.);
+            if p.length_squared() < 1. {
+                break p;
+            }
+        }
+    }
+
+    pub fn random_unit_vector() -> Self {
+        Self::random_in_unit_sphere().unit_vector()
+    }
+
+    pub fn random_in_hemisphere(normal: Self) -> Self {
+        let in_unit_sphere = Self::random_in_unit_sphere();
+        if in_unit_sphere.dot(normal) > 0.0 {
+            in_unit_sphere
+        } else {
+            -in_unit_sphere
+        }
     }
 
     pub fn x(self) -> f64 {
@@ -146,6 +184,7 @@ impl fmt::Display for Vec3 {
 
 pub fn print_color(pixel_color: Color, samples_per_pixel: i64) {
     let Vec3(r, g, b) = pixel_color / samples_per_pixel as f64;
+    let (r, g, b) = (r.sqrt(), g.sqrt(), b.sqrt());
 
     println!(
         "{} {} {}",

@@ -5,21 +5,23 @@ mod ray;
 mod sphere;
 mod vec3;
 
-use rand::Rng;
+use rand::rngs::SmallRng;
+use rand::{Rng, SeedableRng};
 
 use camera::Camera;
 use hittable_list::HittableList;
 use sphere::Sphere;
 use vec3::{print_color, Color, Point3};
 
-fn main() {
-    let mut rng = rand::thread_rng();
+fn main() -> Result<(), rand::Error> {
+    let mut rng = SmallRng::from_rng(rand::thread_rng())?;
 
     // Image
     let aspect_ratio = 16.0 / 9.0;
     let image_width = 400;
     let image_height = (image_width as f64 / aspect_ratio) as i32;
     let samples_per_pixel = 100;
+    let max_depth = 50;
 
     // World
     let mut world = HittableList::new();
@@ -43,11 +45,13 @@ fn main() {
                 let u = (i as f64 + rng.gen_range(0.0..1.0)) / (image_width - 1) as f64;
                 let v = (j as f64 + rng.gen_range(0.0..1.0)) / (image_height - 1) as f64;
                 let r = cam.get_ray(u, v);
-                pixel_color += r.color(&world);
+                pixel_color += r.color(&world, max_depth);
             }
             print_color(pixel_color, samples_per_pixel);
         }
     }
 
     eprintln!("Done.");
+
+    Ok(())
 }
