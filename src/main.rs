@@ -63,12 +63,20 @@ fn main() -> Result<(), rand::Error> {
     )));
 
     // Camera
+    let look_from = Point3::new(3., 3., 2.);
+    let look_at = Point3::new(0., 0., -1.);
+    let vup = Vec3::new(0., 1., 0.);
+    let dist_to_focus = (look_from - look_at).length();
+    let aperture = 2.;
+
     let cam = Camera::new(
-        Point3::new(-2., 2., 1.),
-        Point3::new(0., 0., -1.),
-        Vec3::new(0., 1., 0.),
+        look_from,
+        look_at,
+        vup,
         20.,
         aspect_ratio,
+        aperture,
+        dist_to_focus,
     );
 
     // Render

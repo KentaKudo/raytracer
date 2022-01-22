@@ -16,41 +16,6 @@ impl Vec3 {
         Self(x, y, z)
     }
 
-    pub fn random(min: f64, max: f64) -> Self {
-        let mut rng = match SmallRng::from_rng(rand::thread_rng()) {
-            Ok(rng) => rng,
-            _ => return Self::default(),
-        };
-
-        Self(
-            rng.gen_range(min..max),
-            rng.gen_range(min..max),
-            rng.gen_range(min..max),
-        )
-    }
-
-    pub fn random_in_unit_sphere() -> Self {
-        loop {
-            let p = Self::random(-1., 1.);
-            if p.length_squared() < 1. {
-                break p;
-            }
-        }
-    }
-
-    pub fn random_unit_vector() -> Self {
-        Self::random_in_unit_sphere().unit_vector()
-    }
-
-    pub fn random_in_hemisphere(normal: Self) -> Self {
-        let in_unit_sphere = Self::random_in_unit_sphere();
-        if in_unit_sphere.dot(normal) > 0.0 {
-            in_unit_sphere
-        } else {
-            -in_unit_sphere
-        }
-    }
-
     pub fn x(self) -> f64 {
         self.0
     }
@@ -63,7 +28,7 @@ impl Vec3 {
         self.2
     }
 
-    fn length(self) -> f64 {
+    pub fn length(self) -> f64 {
         self.length_squared().sqrt()
     }
 
@@ -158,6 +123,53 @@ impl ops::MulAssign<f64> for Vec3 {
 impl ops::DivAssign<f64> for Vec3 {
     fn div_assign(&mut self, other: f64) {
         *self = Self(self.x() / other, self.y() / other, self.z() / other)
+    }
+}
+
+impl Vec3 {
+    pub fn random(min: f64, max: f64) -> Self {
+        let mut rng = match SmallRng::from_rng(rand::thread_rng()) {
+            Ok(rng) => rng,
+            _ => return Self::default(),
+        };
+
+        Self(
+            rng.gen_range(min..max),
+            rng.gen_range(min..max),
+            rng.gen_range(min..max),
+        )
+    }
+
+    pub fn random_in_unit_sphere() -> Self {
+        loop {
+            let p = Self::random(-1., 1.);
+            if p.length_squared() < 1. {
+                break p;
+            }
+        }
+    }
+
+    pub fn random_unit_vector() -> Self {
+        Self::random_in_unit_sphere().unit_vector()
+    }
+
+    pub fn random_in_hemisphere(normal: Self) -> Self {
+        let in_unit_sphere = Self::random_in_unit_sphere();
+        if in_unit_sphere.dot(normal) > 0.0 {
+            in_unit_sphere
+        } else {
+            -in_unit_sphere
+        }
+    }
+
+    pub fn random_in_unit_disk() -> Self {
+        loop {
+            let mut p = Self::random(-1., 1.);
+            p.2 = 0.;
+            if p.length_squared() < 1. {
+                break p;
+            }
+        }
     }
 }
 
