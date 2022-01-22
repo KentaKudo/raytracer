@@ -70,6 +70,11 @@ impl Vec3 {
     pub fn length_squared(self) -> f64 {
         self.x() * self.x() + self.y() * self.y() + self.z() * self.z()
     }
+
+    pub fn near_zero(self) -> bool {
+        let s = 1e-8;
+        self.x() < s && self.y() < s && self.z() < s
+    }
 }
 
 use std::ops;
@@ -171,6 +176,10 @@ impl Vec3 {
 
     pub fn unit_vector(self) -> Self {
         self / self.length()
+    }
+
+    pub fn reflect(self, n: Self) -> Self {
+        self - 2. * self.dot(n) * n
     }
 }
 

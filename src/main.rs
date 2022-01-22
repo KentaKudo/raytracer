@@ -1,6 +1,7 @@
 mod camera;
 mod hittable;
 mod hittable_list;
+mod material;
 mod ray;
 mod sphere;
 mod vec3;
@@ -10,6 +11,7 @@ use rand::{Rng, SeedableRng};
 
 use camera::Camera;
 use hittable_list::HittableList;
+use material::{Lambertian, Metal};
 use sphere::Sphere;
 use vec3::{print_color, Color, Point3};
 
@@ -25,8 +27,32 @@ fn main() -> Result<(), rand::Error> {
 
     // World
     let mut world = HittableList::new();
-    world.add(Box::new(Sphere::new(Point3::new(0., 0., -1.), 0.5)));
-    world.add(Box::new(Sphere::new(Point3::new(0., -100.5, -1.), 100.)));
+
+    let material_ground = Box::new(Lambertian::new(Color::new(0.8, 0.8, 0.)));
+    let material_center = Box::new(Lambertian::new(Color::new(0.7, 0.3, 0.3)));
+    let material_left = Box::new(Metal::new(Color::new(0.8, 0.8, 0.8), 0.3));
+    let material_right = Box::new(Metal::new(Color::new(0.8, 0.6, 0.2), 1.0));
+
+    world.add(Box::new(Sphere::new(
+        Point3::new(0., -100.5, -1.),
+        100.,
+        material_ground,
+    )));
+    world.add(Box::new(Sphere::new(
+        Point3::new(0., 0., -1.),
+        0.5,
+        material_center,
+    )));
+    world.add(Box::new(Sphere::new(
+        Point3::new(-1., 0., -1.),
+        0.5,
+        material_left,
+    )));
+    world.add(Box::new(Sphere::new(
+        Point3::new(1., 0., -1.),
+        0.5,
+        material_right,
+    )));
 
     // Camera
     let cam = Camera::new();

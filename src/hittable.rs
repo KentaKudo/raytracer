@@ -1,18 +1,21 @@
+use crate::material::Material;
 use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
 
-pub struct HitRecord {
+pub struct HitRecord<'a> {
     pub p: Point3,
     pub normal: Vec3,
+    pub mat: &'a dyn Material,
     pub t: f64,
     front_face: bool,
 }
 
-impl HitRecord {
-    pub fn new(p: Point3, t: f64) -> Self {
+impl<'a> HitRecord<'a> {
+    pub fn new(p: Point3, t: f64, mat: &'a dyn Material) -> Self {
         Self {
             p,
             normal: Vec3::default(),
+            mat,
             t,
             front_face: false,
         }
