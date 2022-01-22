@@ -7,7 +7,7 @@ pub struct HitRecord<'a> {
     pub normal: Vec3,
     pub mat: &'a dyn Material,
     pub t: f64,
-    front_face: bool,
+    pub front_face: bool,
 }
 
 impl<'a> HitRecord<'a> {
