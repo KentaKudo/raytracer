@@ -9,21 +9,28 @@ pub struct Camera {
 }
 
 impl Camera {
-    pub fn new() -> Self {
-        let aspect_ratio = 16. / 9.;
-        let viewport_height = 2.;
+    pub fn new(
+        look_from: Point3,
+        look_at: Point3,
+        vup: Vec3,            // "view up"
+        vfov_in_degrees: f64, // vertical field-of-view
+        aspect_ratio: f64,
+    ) -> Self {
+        let theta = vfov_in_degrees.to_radians();
+        let h = (theta / 2.).tan();
+        let viewport_height = 2. * h;
         let viewport_width = aspect_ratio * viewport_height;
-        let focal_length = 1.;
 
-        let org = Point3::default();
-        let horizontal = Vec3::new(viewport_width, 0., 0.);
-        let vertical = Vec3::new(0., viewport_height, 0.);
+        let w = (look_from - look_at).unit_vector();
+        let u = vup.cross(w).unit_vector();
+        let v = w.cross(u);
+
+        let org = look_from;
+        let horizontal = viewport_width * u;
+        let vertical = viewport_height * v;
         Self {
             org,
-            lower_left_corner: org
-                - horizontal / 2.
-                - vertical / 2.
-                - Vec3::new(0., 0., focal_length),
+            lower_left_corner: org - horizontal / 2. - vertical / 2. - w,
             horizontal,
             vertical,
         }

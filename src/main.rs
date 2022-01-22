@@ -13,7 +13,7 @@ use camera::Camera;
 use hittable_list::HittableList;
 use material::{Dielectric, Lambertian, Metal};
 use sphere::Sphere;
-use vec3::{print_color, Color, Point3};
+use vec3::{print_color, Color, Point3, Vec3};
 
 fn main() -> Result<(), rand::Error> {
     let mut rng = SmallRng::from_rng(rand::thread_rng())?;
@@ -31,7 +31,7 @@ fn main() -> Result<(), rand::Error> {
     let material_ground = Box::new(Lambertian::new(Color::new(0.8, 0.8, 0.)));
     let material_center = Box::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
     let material_left = Box::new(Dielectric::new(1.5));
-    let material_right = Box::new(Metal::new(Color::new(0.8, 0.6, 0.2), 1.0));
+    let material_right = Box::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.0));
 
     world.add(Box::new(Sphere::new(
         Point3::new(0., -100.5, -1.),
@@ -52,7 +52,7 @@ fn main() -> Result<(), rand::Error> {
     )));
     world.add(Box::new(Sphere::new(
         Point3::new(-1., 0., -1.),
-        -0.4,
+        -0.45,
         material_left,
     )));
 
@@ -63,7 +63,13 @@ fn main() -> Result<(), rand::Error> {
     )));
 
     // Camera
-    let cam = Camera::new();
+    let cam = Camera::new(
+        Point3::new(-2., 2., 1.),
+        Point3::new(0., 0., -1.),
+        Vec3::new(0., 1., 0.),
+        20.,
+        aspect_ratio,
+    );
 
     // Render
     println!("P3");
